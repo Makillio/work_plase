@@ -1,0 +1,1100 @@
+/* ============================================
+   Vault-Tec Pip-Boy 3000 - Main Styles
+   Fallout-themed interface
+   ============================================ */
+
+:root {
+    --vault-green: #00ff41;
+    --vault-dark: #0a1a0a;
+    --vault-bg: #1a2a1a;
+    --vault-surface: #0d1f0d;
+    --vault-border: #00ff41;
+    --vault-text: #00ff41;
+    --vault-dim: #006600;
+    --pipboy-orange: #ff8c00;
+    --pipboy-amber: #ffb347;
+    --danger: #ff3333;
+    --warning: #ffaa00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: var(--vault-text);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ============================================
+   Загрузочный экран Vault-Tec
+   ============================================ */
+.vault-loading-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, #0a1a0a, #000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.vault-loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.vault-loading-content {
+    text-align: center;
+    color: var(--vault-green);
+}
+
+.vault-logo {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0 0 20px var(--vault-green);
+    animation: flicker 2s infinite;
+    margin-bottom: 30px;
+}
+
+.pipboy-silhouette {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px;
+    border: 3px solid var(--vault-green);
+    border-radius: 20px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="50" rx="10" fill="none" stroke="%2300ff41" stroke-width="2"/><circle cx="50" cy="45" r="15" fill="none" stroke="%2300ff41" stroke-width="2"/><line x1="20" y1="70" x2="80" y2="70" stroke="%2300ff41" stroke-width="2"/></svg>') center/contain no-repeat;
+    animation: pulse 2s infinite;
+}
+
+.loading-bar-container {
+    width: 300px;
+    height: 20px;
+    border: 2px solid var(--vault-green);
+    margin: 0 auto 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-bar {
+    height: 100%;
+    background: var(--vault-green);
+    width: 0%;
+    animation: loadProgress 3s ease-in-out forwards;
+    box-shadow: 0 0 10px var(--vault-green);
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    animation: flicker 1.5s infinite;
+}
+
+.vault-number {
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 30px var(--vault-green);
+}
+
+/* ============================================
+   Основное приложение Pip-Boy
+   ============================================ */
+.pipboy-app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--vault-bg);
+    position: relative;
+}
+
+.pipboy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--vault-surface);
+    border-bottom: 2px solid var(--vault-border);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar-section {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--vault-green);
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-change-btn {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--vault-surface);
+    color: var(--vault-text);
+    border: 1px solid var(--vault-green);
+    padding: 2px 8px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+.vault-title {
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px var(--vault-green);
+}
+
+.vault-status {
+    font-size: 0.8rem;
+    color: var(--vault-dim);
+}
+
+.header-right {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-indicator {
+    font-size: 0.9rem;
+    text-shadow: 0 0 5px var(--vault-green);
+}
+
+/* ============================================
+   Навигация
+   ============================================ */
+.pipboy-nav {
+    display: flex;
+    background: var(--vault-surface);
+    border-bottom: 1px solid var(--vault-border);
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    border: none;
+    color: var(--vault-dim);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.nav-btn.active {
+    color: var(--vault-green);
+    background: rgba(0, 255, 65, 0.1);
+    border-bottom: 2px solid var(--vault-green);
+    text-shadow: 0 0 10px var(--vault-green);
+}
+
+.nav-btn:hover {
+    color: var(--vault-green);
+    background: rgba(0, 255, 65, 0.05);
+}
+
+/* ============================================
+   Контейнер страниц
+   ============================================ */
+.pages-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-section {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.page-section.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.page-content {
+    padding: 20px;
+    height: 100%;
+}
+
+.page-title {
+    font-size: 1.8rem;
+    text-shadow: 0 0 15px var(--vault-green);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--vault-border);
+}
+
+/* ============================================
+   Компоненты
+   ============================================ */
+.vault-btn {
+    padding: 10px 20px;
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-green);
+    color: var(--vault-text);
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.vault-btn:hover {
+    background: rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+}
+
+.vault-btn.primary {
+    background: rgba(0, 255, 65, 0.1);
+    border-color: var(--vault-green);
+}
+
+.vault-btn.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.vault-btn.small {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+}
+
+.vault-input {
+    padding: 8px 12px;
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    color: var(--vault-text);
+    font-family: 'Courier New', monospace;
+    outline: none;
+    font-size: 0.85rem;
+}
+
+.vault-input:focus {
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+/* ============================================
+   Анимации
+   ============================================ */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes loadProgress {
+    0% { width: 0%; }
+    30% { width: 30%; }
+    60% { width: 60%; }
+    100% { width: 100%; }
+}
+
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+@keyframes strike {
+    from { text-decoration-color: transparent; }
+    to { text-decoration-color: var(--danger); }
+}
+
+/* Прокрутка в стиле терминала */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--vault-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--vault-green);
+    border-radius: 4px;
+}
+
+/* ============================================
+   ToDo Layout
+   ============================================ */
+.todo-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    height: calc(100vh - 200px);
+}
+
+.todo-main {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Форма задачи */
+.task-form {
+    background: rgba(0, 255, 65, 0.05);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.task-form.error {
+    animation: shake 0.5s;
+    border-color: var(--danger);
+    box-shadow: 0 0 15px var(--danger);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--vault-dim);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.edit-indicator {
+    font-size: 0.8rem;
+    color: var(--pipboy-amber);
+}
+
+/* Список задач */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(0, 255, 65, 0.05);
+    border: 1px solid var(--vault-dim);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.task-item:hover {
+    background: rgba(0, 255, 65, 0.15);
+}
+
+.task-time {
+    font-weight: bold;
+    color: var(--vault-green);
+    min-width: 100px;
+}
+
+.task-desc {
+    flex: 1;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.task-actions button {
+    background: transparent;
+    border: 1px solid var(--vault-border);
+    color: var(--vault-text);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+}
+
+/* Правая колонка */
+.todo-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.week-view {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.week-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.week-label {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.week-day {
+    background: rgba(0, 255, 65, 0.05);
+    border: 1px solid var(--vault-dim);
+    padding: 6px;
+    min-height: 80px;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.week-day.today {
+    border-color: var(--vault-green);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.week-day .day-num {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.week-task {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-green);
+    padding: 2px 4px;
+    font-size: 0.65rem;
+    cursor: grab;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.week-task:active {
+    cursor: grabbing;
+}
+
+/* Календарь */
+.calendar-widget {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 12px;                /* немного уменьшен */
+    flex-shrink: 0;
+    max-height: 300px;            /* ограничиваем высоту */
+    overflow-y: auto;            /* скролл если не влезает */
+}
+
+
+.mini-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.day-name {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--vault-dim);
+    font-weight: bold;
+}
+
+.day-num {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: default;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.day-num.today {
+    background: var(--vault-green);
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 8px var(--vault-green);
+}
+
+.day-num.other-month {
+    opacity: 0.4;
+}
+
+/* Попап заметки */
+.note-popup {
+    position: fixed;
+    background: var(--vault-surface);
+    border: 2px solid var(--vault-green);
+    padding: 15px;
+    max-width: 280px;
+    z-index: 90;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: 0.2s ease;
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.note-popup.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.note-popup-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--vault-green);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.note-popup-content {
+    color: var(--vault-text);
+    font-size: 0.9rem;
+}
+
+/* Попап ошибки */
+.error-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--danger);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    box-shadow: 0 0 20px var(--danger);
+}
+
+.error-popup.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ============================================
+   Data (Converter) Layout
+   ============================================ */
+.data-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    height: calc(100vh - 200px);
+}
+
+.data-left {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.data-input-block {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    flex-shrink: 0;
+}
+
+.block-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--vault-dim);
+}
+
+.vault-textarea {
+    width: 100%;
+    height: 100px;
+    background: var(--vault-dark);
+    border: 1px solid var(--vault-green);
+    color: var(--vault-text);
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    resize: vertical;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.vault-textarea:focus {
+    box-shadow: 0 0 8px var(--vault-green);
+}
+
+.input-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.file-label {
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Блок С */
+.library-block {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.library-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-counter {
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 30px;
+    text-align: center;
+}
+
+.checker-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--vault-text);
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.checker-btn.active {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 4px;
+    flex: 1;
+    align-content: start;
+}
+
+.cards-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cards-grid::-webkit-scrollbar-thumb {
+    background: var(--vault-green);
+    border-radius: 3px;
+}
+
+.library-card {
+    background: rgba(0, 255, 65, 0.05);
+    border: 1px solid var(--vault-dim);
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s, border-color 0.2s;
+    border-radius: 4px;
+    min-height: 80px;
+}
+
+.library-card:hover {
+    background: rgba(0, 255, 65, 0.15);
+    border-color: var(--vault-green);
+}
+
+.library-card.excluded {
+    opacity: 0.6;
+}
+
+.library-card.excluded .lib-card-title {
+    text-decoration: line-through;
+    text-decoration-color: var(--danger);
+    animation: strike 0.3s ease;
+}
+
+.lib-card-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    word-break: break-word;
+}
+
+.lib-card-desc {
+    font-size: 0.7rem;
+    color: var(--vault-dim);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.card-actions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.library-card:hover .card-actions {
+    opacity: 1;
+}
+
+.card-actions button {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-green);
+    color: var(--vault-text);
+    cursor: pointer;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    font-family: 'Courier New', monospace;
+    transition: background 0.2s;
+}
+
+.card-actions button:hover {
+    background: rgba(0, 255, 65, 0.2);
+}
+
+/* Блок Б */
+.data-display {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.empty-state {
+    color: var(--vault-dim);
+    font-size: 1.2rem;
+}
+
+.flashcard {
+    width: 100%;
+    max-width: 500px;
+    min-height: 300px;
+    perspective: 1000px;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flashcard:hover .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    border: 2px solid var(--vault-green);
+    background: var(--vault-surface);
+    border-radius: 8px;
+}
+
+.flashcard-front {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--vault-green);
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    font-size: 1.1rem;
+    color: var(--vault-text);
+    line-height: 1.5;
+}
+
+.flashcard-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.queue-info {
+    font-size: 0.8rem;
+    color: var(--vault-dim);
+}
+
+/* ============================================
+   Budget Layout
+   ============================================ */
+.budget-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.budget-card {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 25px;
+    text-align: center;
+}
+
+.budget-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--vault-dim);
+}
+
+.budget-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 20px var(--vault-green);
+    margin: 20px 0;
+}
+
+.budget-edit {
+    display: flex;
+    gap: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--vault-dim);
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.stat-value.total { color: var(--vault-green); }
+.stat-value.remain { color: var(--pipboy-amber); }
+.stat-value.expense { color: var(--danger); }
+
+.history-block {
+    background: var(--vault-surface);
+    border: 1px solid var(--vault-border);
+    padding: 15px;
+}
+
+.history-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.history-list {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.history-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid var(--vault-dim);
+    cursor: pointer;
+}
+
+.history-row:hover {
+    background: rgba(0, 255, 65, 0.1);
+}
+
+.history-empty {
+    color: var(--vault-dim);
+    text-align: center;
+    padding: 20px;
+}
+
+.add-transaction {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* ============================================
+   Модальные окна
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 100;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--vault-surface);
+    border: 2px solid var(--vault-green);
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h3 {
+    margin-bottom: 15px;
+}
+
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
