@@ -31,9 +31,7 @@ body {
     height: 100vh;
 }
 
-/* ============================================
-   Загрузочный экран Vault-Tec
-   ============================================ */
+/* Загрузочный экран Vault-Tec */
 .vault-loading-screen {
     position: fixed;
     inset: 0;
@@ -102,9 +100,7 @@ body {
     text-shadow: 0 0 30px var(--vault-green);
 }
 
-/* ============================================
-   Основное приложение Pip-Boy
-   ============================================ */
+/* Основное приложение Pip-Boy*/
 .pipboy-app {
     height: 100vh;
     display: flex;
@@ -179,9 +175,7 @@ body {
     text-shadow: 0 0 5px var(--vault-green);
 }
 
-/* ============================================
-   Навигация
-   ============================================ */
+/*Навигация */
 .pipboy-nav {
     display: flex;
     background: var(--vault-surface);
@@ -216,9 +210,7 @@ body {
     background: rgba(0, 255, 65, 0.05);
 }
 
-/* ============================================
-   Контейнер страниц
-   ============================================ */
+/*Контейнер страниц*/
 .pages-container {
     flex: 1;
     position: relative;
@@ -254,9 +246,7 @@ body {
     border-bottom: 1px solid var(--vault-border);
 }
 
-/* ============================================
-   Компоненты
-   ============================================ */
+/* Компоненты*/
 .vault-btn {
     padding: 10px 20px;
     background: var(--vault-surface);
@@ -303,9 +293,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
-/* ============================================
-   Анимации
-   ============================================ */
+/* Анимации*/
 @keyframes flicker {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.8; }
@@ -350,9 +338,7 @@ body {
     border-radius: 4px;
 }
 
-/* ============================================
-   ToDo Layout
-   ============================================ */
+/* ToDo */
 .todo-layout {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -558,10 +544,10 @@ body {
 .calendar-widget {
     background: var(--vault-surface);
     border: 1px solid var(--vault-border);
-    padding: 12px;                /* немного уменьшен */
+    padding: 12px;     
     flex-shrink: 0;
     max-height: 300px;            /* ограничиваем высоту */
-    overflow-y: auto;            /* скролл если не влезает */
+    overflow-y: auto;            
 }
 
 
@@ -663,9 +649,7 @@ body {
     pointer-events: auto;
 }
 
-/* ============================================
-   Data (Converter) Layout
-   ============================================ */
+/* Converter */
 .data-layout {
     display: grid;
     grid-template-columns: 340px 1fr;
@@ -943,9 +927,7 @@ body {
     color: var(--vault-dim);
 }
 
-/* ============================================
-   Budget Layout
-   ============================================ */
+/*Budget Layout*/
 .budget-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1048,9 +1030,7 @@ body {
     margin-top: 10px;
 }
 
-/* ============================================
-   Модальные окна
-   ============================================ */
+/*Модальные окна*/
 .modal-overlay {
     position: fixed;
     inset: 0;
