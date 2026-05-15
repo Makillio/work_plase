@@ -1,59 +1,414 @@
-// ============================================
-// Main Navigation & Avatar Management
-// ============================================
-(function() {
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const pageSections = document.querySelectorAll('.page-section');
-    let currentPageName = 'tasks';
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault-Tec Pip-Boy 3000</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Всплывающее окно входа/регистрации -->
+    <div class="auth-modal-overlay" id="authModalOverlay">
+        <div class="auth-modal">
+            <button class="auth-modal-close" id="authCloseBtn" type="button" aria-label="Закрыть окно регистрации">X</button>
+            <div class="auth-header">
+                <div class="auth-title">PIP-BOY 3000</div>
+                <div class="auth-status">Убежище 111 - Система безопасности | Требуется авторизация</div>
+            </div>
 
-    function switchToPage(pageName) {
-        if (currentPageName === pageName) return;
-        const currentPage = document.getElementById('page-' + currentPageName);
-        const nextPage = document.getElementById('page-' + pageName);
-        const currentIndex = Array.from(pageSections).indexOf(currentPage);
-        const nextIndex = Array.from(pageSections).indexOf(nextPage);
-        const direction = nextIndex > currentIndex ? 1 : -1;
-        
-        currentPage.style.transform = `translateX(${-direction * 100}%)`;
-        currentPage.style.opacity = '0';
-        nextPage.style.transform = 'translateX(0)';
-        nextPage.style.opacity = '1';
-        nextPage.classList.add('active');
-        
-        setTimeout(() => {
-            currentPage.classList.remove('active');
-            currentPage.style.transform = '';
-            currentPage.style.opacity = '';
-        }, 500);
-        
-        navButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-page') === pageName) btn.classList.add('active');
-        });
-        currentPageName = pageName;
-    }
+            <div class="auth-mode-switch">
+                <button class="auth-mode-btn active" id="loginModeBtn" type="button">┌ ВХОД ┘</button>
+                <button class="auth-mode-btn" id="registerModeBtn" type="button">┌ РЕГИСТРАЦИЯ ┘</button>
+            </div>
 
-    navButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            switchToPage(this.getAttribute('data-page'));
-        });
-    });
+            <div class="auth-form-container" id="loginForm">
+                <div class="auth-section-title">>> АВТОРИЗАЦИЯ</div>
 
-    // Avatar upload
-    const avatarImg = document.getElementById('avatarImg');
-    const avatarInput = document.getElementById('avatarInput');
-    document.getElementById('avatarSection').addEventListener('click', () => avatarInput.click());
-    avatarInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                avatarImg.src = ev.target.result;
-                localStorage.setItem('vaultAvatar', ev.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-    const saved = localStorage.getItem('vaultAvatar');
-    if (saved) avatarImg.src = saved;
-})();
+                <div class="auth-form-group">
+                    <label for="loginEmail">┌ ЛОГИН / EMAIL</label>
+                    <input type="text" id="loginEmail" class="auth-input" placeholder="> ВВЕДИТЕ EMAIL...">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="loginPassword">└ ПАРОЛЬ</label>
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="> ВВЕДИТЕ ПАРОЛЬ...">
+                </div>
+
+                <div class="auth-form-group">
+                    <div class="auth-checkbox-group">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">► ЗАПОМНИТЬ МЕНЯ</label>
+                    </div>
+                </div>
+
+                <div class="auth-button-group">
+                    <button class="auth-btn" id="loginBtn" type="button">▶ ВОЙТИ В СИСТЕМУ</button>
+                </div>
+
+                <div class="auth-info-message" id="loginMessage"></div>
+            </div>
+
+            <div class="auth-form-container hidden" id="registerForm">
+                <div class="auth-section-title">>> РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ</div>
+
+                <div class="auth-form-group">
+                    <label for="regUsername">┌ ИМЯ ПОЛЬЗОВАТЕЛЯ</label>
+                    <input type="text" id="regUsername" class="auth-input" placeholder="> ПРИДУМАЙТЕ ЛОГИН...">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="regEmail">├ EMAIL</label>
+                    <input type="email" id="regEmail" class="auth-input" placeholder="> ВАШ EMAIL АДРЕС...">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="regPassword">├ ПАРОЛЬ</label>
+                    <input type="password" id="regPassword" class="auth-input" placeholder="> ПРИДУМАЙТЕ ПАРОЛЬ...">
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="regConfirmPassword">└ ПОДТВЕРЖДЕНИЕ ПАРОЛЯ</label>
+                    <input type="password" id="regConfirmPassword" class="auth-input" placeholder="> ПОВТОРИТЕ ПАРОЛЬ...">
+                </div>
+
+                <div class="auth-form-group">
+                    <div class="auth-checkbox-group">
+                        <input type="checkbox" id="acceptTerms">
+                        <label for="acceptTerms">► Я СОГЛАСЕН С ПРАВИЛАМИ УБЕЖИЩА</label>
+                    </div>
+                </div>
+
+                <div class="auth-button-group">
+                    <button class="auth-btn" id="registerBtn" type="button">▶ ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                </div>
+
+                <div class="auth-info-message" id="registerMessage"></div>
+            </div>
+
+            <div class="auth-security-status">
+                <div class="auth-security-line">[ СИСТЕМА БЕЗОПАСНОСТИ: АКТИВНА ]</div>
+                <div class="auth-security-line">[ ШИФРОВАНИЕ: 128-BIT PIP-ENCRYPTION ]</div>
+                <div class="auth-security-line" id="userCount">[ ЗАРЕГИСТРИРОВАНО ПОЛЬЗОВАТЕЛЕЙ: 0 ]</div>
+            </div>
+
+            <div class="auth-warning">НЕСАНКЦИОНИРОВАННЫЙ ДОСТУП ЗАПРЕЩЕН</div>
+        </div>
+    </div>
+
+    <!-- Загрузочный экран Vault-Tec -->
+    <div id="vaultLoadingScreen" class="vault-loading-screen">
+        <div class="vault-loading-content">
+            <div class="vault-logo">Vault-Tec Industries</div>
+            <div class="pipboy-silhouette"></div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="loading-text">Initializing Pip-Boy 3000...</div>
+            <div class="vault-number">Vault 111</div>
+        </div>
+    </div>
+
+    <!-- Основное приложение Pip-Boy -->
+    <div id="pipboyApp" class="pipboy-app" style="display: none;">
+        <!-- Шапка в стиле Pip-Boy -->
+        <header class="pipboy-header">
+            <div class="header-left">
+                <div class="avatar-section" id="avatarSection">
+                    <img src="img/default-avatar.png" alt="Vault Dweller" class="avatar-img" id="avatarImg">
+                    <label for="avatarInput" class="avatar-change-btn">ID</label>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                </div>
+                <div class="header-info">
+                    <h1 class="vault-title">Pip-Boy 3000</h1>
+                    <div class="vault-status">Vault 111 - Status: Active</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="stat-indicator">RAD: 0.0</div>
+                <div class="stat-indicator">HP: 100/100</div>
+                <div class="stat-indicator">AP: 100/100</div>
+            </div>
+        </header>
+
+        <!-- Навигация Pip-Boy -->
+        <nav class="pipboy-nav">
+            <button class="nav-btn active" data-page="tasks">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Tasks</span>
+            </button>
+            <button class="nav-btn" data-page="data">
+                <span class="nav-icon">📟</span>
+                <span class="nav-label">Data</span>
+            </button>
+            <button class="nav-btn" data-page="budget">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">Budget</span>
+            </button>
+            <button class="nav-btn" data-page="notes">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Notes</span>
+            </button>
+        </nav>
+
+        <!-- Контейнер страниц -->
+        <main class="pages-container" id="pagesContainer">
+            <!-- Страница Tasks (ToDo) -->
+            <section class="page-section active" id="page-tasks">
+                <div class="page-content">
+                    <h2 class="page-title">📋 Task Manager</h2>
+                    <div class="todo-layout">
+                        <!-- Блок C: основной список задач + форма -->
+                        <div class="todo-main">
+                            <div class="todo-header">
+                                <span class="section-title">Active Tasks</span>
+                                <button class="vault-btn" id="showAddTaskBtn">+ New Task</button>
+                            </div>
+                            <div class="task-form" id="taskForm" style="display: none;">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input type="date" class="vault-input" id="inputStartDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input type="date" class="vault-input" id="inputEndDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Start Time</label>
+                                        <input type="time" class="vault-input" id="inputStartTime" step="60">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>End Time</label>
+                                        <input type="time" class="vault-input" id="inputEndTime" step="60">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" class="vault-input" id="inputDesc" placeholder="What needs to be done?">
+                                </div>
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea class="vault-input" id="inputNote" rows="2" placeholder="Additional information..."></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="vault-btn primary" id="saveTaskBtn">Save</button>
+                                    <button class="vault-btn" id="cancelTaskBtn">Cancel</button>
+                                    <span id="editModeIndicator" class="edit-indicator"></span>
+                                </div>
+                            </div>
+                            <div class="task-list" id="taskListContainer"></div>
+                        </div>
+                        <!-- Правая колонка: Блок Б (неделя) и Блок А (календарь) -->
+                        <div class="todo-sidebar">
+                            <div class="week-view">
+                                <div class="week-controls">
+                                    <button class="vault-btn small" id="prevWeekBtn">◄ Prev</button>
+                                    <span id="weekRangeLabel" class="week-label">Week 1</span>
+                                    <button class="vault-btn small" id="nextWeekBtn">Next ►</button>
+                                </div>
+                                <div class="week-grid" id="weekGrid"></div>
+                            </div>
+                            <div class="calendar-widget" id="calendarWidget"></div>
+                        </div>
+                    </div>
+                    <!-- Всплывающая заметка -->
+                    <div class="note-popup" id="notePopup">
+                        <button class="note-popup-close" id="closeNotePopup">✕</button>
+                        <div class="note-popup-content" id="notePopupContent"></div>
+                    </div>
+                    <!-- Всплывающее окно ошибки -->
+                    <div class="error-popup" id="errorPopup"></div>
+                </div>
+            </section>
+
+            <!-- Страница Data (Md-Card) -->
+            <section class="page-section" id="page-data">
+                <div class="page-content">
+                    <h2 class="page-title">📟 Data Terminal</h2>
+                    <div class="data-layout">
+                        <!-- Левая колонка: Блок А (ввод) + Блок С (библиотека) -->
+                        <div class="data-left">
+                            <!-- Блок А: ввод MD -->
+                            <div class="data-input-block">
+                                <div class="block-label">MD Input</div>
+                                <textarea id="mdInput" class="vault-textarea" placeholder="Paste Markdown here..."></textarea>
+                                <div class="input-actions">
+                                    <label class="vault-btn small file-label">
+                                        Load File
+                                        <input type="file" id="mdFileInput" accept=".md,.txt" hidden>
+                                    </label>
+                                    <button class="vault-btn primary small" id="parseBtn">Process</button>
+                                </div>
+                            </div>
+                            <!-- Блок С: библиотека -->
+                            <div class="library-block">
+                                <div class="library-header">
+                                    <span class="block-label">Library</span>
+                                    <div class="library-tools">
+                                        <span class="card-counter" id="cardCount">0</span>
+                                        <button class="vault-btn small checker-btn" id="excludeAllBtn" title="Exclude/Include all">✕</button>
+                                        <button class="vault-btn danger small" id="deleteAllBtn">Delete All</button>
+                                    </div>
+                                </div>
+                                <div class="cards-grid" id="cardsGrid"></div>
+                            </div>
+                        </div>
+                        <!-- Блок Б: отображение карточки -->
+                        <div class="data-display" id="flashcardDisplay">
+                            <div class="empty-state">No card selected</div>
+                            <div class="flashcard-controls" id="flashcardControls" style="display: none;">
+                                <button class="vault-btn primary" id="nextCardBtn">Next Card</button>
+                                <span class="queue-info" id="queueInfo"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Модальное окно редактирования -->
+                <div class="modal-overlay" id="editModal">
+                    <div class="modal-content">
+                        <h3>Edit Card</h3>
+                        <input type="text" id="editTitle" class="vault-input" placeholder="Title">
+                        <textarea id="editDesc" class="vault-input" placeholder="Description"></textarea>
+                        <div class="modal-actions">
+                            <button class="vault-btn" id="cancelEditBtn">Cancel</button>
+                            <button class="vault-btn primary" id="saveEditBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Подтверждение удаления -->
+                <div class="modal-overlay" id="confirmModal">
+                    <div class="modal-content">
+                        <p>Delete all cards?</p>
+                        <div class="modal-actions">
+                            <button class="vault-btn" id="cancelDeleteBtn">No</button>
+                            <button class="vault-btn danger" id="confirmDeleteBtn">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница Budget -->
+            <section class="page-section" id="page-budget">
+                <div class="page-content">
+                    <h2 class="page-title">💰 Budget Manager</h2>
+                    <div class="budget-layout">
+                        <div class="budget-main">
+                            <div class="budget-card">
+                                <div class="budget-label">Monthly Budget</div>
+                                <div class="budget-amount" id="budgetDisplayMain">50,000 ₽</div>
+                                <div class="budget-edit">
+                                    <input type="number" id="budgetInputField" class="vault-input" value="50000" placeholder="New budget">
+                                    <button class="vault-btn primary" id="saveBudgetBtn">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="budget-stats">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-label">Total</div>
+                                    <div class="stat-value total" id="totalSumValue">50,000 ₽</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Remaining</div>
+                                    <div class="stat-value remain" id="remainValue">50,000 ₽</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-label">Spent</div>
+                                    <div class="stat-value expense" id="expensesValue">0 ₽</div>
+                                </div>
+                            </div>
+                            <div class="history-block">
+                                <div class="history-header">Transaction History</div>
+                                <ul class="history-list" id="historyList">
+                                    <li class="history-empty">No transactions yet</li>
+                                </ul>
+                                <div class="add-transaction">
+                                    <input type="text" id="newOpName" class="vault-input" placeholder="Name">
+                                    <input type="number" id="newOpAmount" class="vault-input" placeholder="Amount">
+                                    <button class="vault-btn primary" id="addOpBtn">+ Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница Notes -->
+            <section class="page-section" id="page-notes">
+                <div class="page-content">
+                    <h2 class="page-title">📝 Notes Terminal</h2>
+
+                    <div class="notes-page-grid">
+                        <div class="notes-panel">
+                            <div class="notes-section-title">>> БАЗА ЗАМЕТОК</div>
+
+                            <div class="notes-search-bar">
+                                <input type="text" id="searchInput" class="notes-search-input" placeholder="> ПОИСК ЗАМЕТОК...">
+                            </div>
+
+                            <div class="notes-tags-filter" id="tagsFilter"></div>
+                            <div class="notes-list" id="notesList"></div>
+
+                            <div class="notes-button-group">
+                                <button class="notes-btn" id="newNoteBtn" type="button">+ НОВАЯ ЗАМЕТКА</button>
+                                <button class="notes-btn" id="prevBtn" type="button">◀ НАЗАД</button>
+                                <button class="notes-btn" id="nextBtn" type="button">ДАЛЕЕ ▶</button>
+                            </div>
+                        </div>
+
+                        <div class="notes-editor-panel">
+                            <div class="notes-section-title">>> РЕДАКТОР ЗАМЕТОК</div>
+
+                            <div class="notes-form-group">
+                                <label for="noteTitle">┌ ЗАГОЛОВОК</label>
+                                <input type="text" id="noteTitle" class="notes-input" placeholder="Название заметки...">
+                            </div>
+
+                            <div class="notes-form-group">
+                                <label for="noteContent">└ СОДЕРЖАНИЕ</label>
+                                <textarea id="noteContent" class="notes-textarea" placeholder="Текст заметки..."></textarea>
+                            </div>
+
+                            <div class="notes-form-group">
+                                <label for="noteTags">► ТЕГИ (через запятую)</label>
+                                <input type="text" id="noteTags" class="notes-input" placeholder="работа, личное, идеи, важное...">
+                            </div>
+
+                            <div class="notes-form-group">
+                                <label for="noteDate">📅 ДАТА</label>
+                                <input type="date" id="noteDate" class="notes-input">
+                            </div>
+
+                            <div class="notes-form-group">
+                                <label>📍 СТАТУС</label>
+                                <div class="notes-button-group">
+                                    <button class="notes-btn" id="pinBtn" type="button">📌 ЗАКРЕПИТЬ</button>
+                                    <button class="notes-btn" id="saveBtn" type="button">💾 СОХРАНИТЬ</button>
+                                    <button class="notes-btn notes-btn-danger" id="deleteBtn" type="button">🗑 УДАЛИТЬ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notes-calendar">
+                        <div class="notes-calendar-header">
+                            <button class="notes-btn" id="calendarPrev" type="button">◀</button>
+                            <span id="calendarMonth" class="notes-calendar-month"></span>
+                            <button class="notes-btn" id="calendarNext" type="button">▶</button>
+                        </div>
+                        <div class="notes-calendar-grid" id="calendarGrid"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/loader.js"></script>
+    <script src="js/todo.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/budget.js"></script>
+    <script src="js/auth-modal.js"></script>
+    <script src="js/notes-page.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
